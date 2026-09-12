@@ -1,4 +1,4 @@
-name = "home-clean"
+name = "home-cleaning"
 main = "worker.js"
 compatibility_date = "2025-09-01"
 
