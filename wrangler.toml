@@ -1,0 +1,10 @@
+name = "home-clean"
+main = "worker.js"
+compatibility_date = "2025-09-01"
+
+# 静态页面目录（public/index.html）
+assets = { directory = "./public", binding = "ASSETS" }
+
+# 共享数据存储（Cloudflare KV，不填 ID，部署时自动创建并绑定）
+[[kv_namespaces]]
+binding = "KV"
