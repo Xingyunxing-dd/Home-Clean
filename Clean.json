@@ -1,0 +1,90 @@
+{
+  "appName": "宿舍清洁轮值打卡",
+  "version": "1.2.0",
+  "description": "双人宿舍清洁任务轮流打卡工具：打扫卫生、扔厕所垃圾、扔客厅垃圾三项任务由幸运星、Wi轮流负责，完成者在网页上点击打卡并记录打扫时间，页面自动显示该项任务下一次轮到的人并提醒。",
+  "members": [
+    {
+      "id": "member_lucky",
+      "name": "幸运星"
+    },
+    {
+      "id": "member_wi",
+      "name": "Wi"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "clean_room",
+      "name": "打扫卫生",
+      "description": "对宿舍公共区域进行打扫和整理",
+      "scopeNote": "具体范围（如扫地拖地、桌面整理等）可在后续补充，或由网页设置页自定义"
+    },
+    {
+      "id": "toilet_trash",
+      "name": "扔厕所垃圾",
+      "description": "清理并扔掉厕所间的垃圾"
+    },
+    {
+      "id": "living_trash",
+      "name": "扔客厅垃圾",
+      "description": "清理并扔掉客厅的垃圾"
+    }
+  ],
+  "rotationRule": {
+    "mode": "per_task_independent",
+    "modeDescription": "每项任务各自独立轮流，互不影响：某项任务的当前负责人打卡完成后，该项任务的下一位负责人自动切换为另一名成员，其余任务不受影响。",
+    "alternatives": [
+      {
+        "mode": "whole_group",
+        "description": "三项任务作为一个整体打包轮流：幸运星完成全部三项后整体轮到Wi（当前需求未采用，如需可切换）"
+      }
+    ]
+  },
+  "checkinFlow": {
+    "steps": [
+      "选择要打卡的任务（打扫卫生 / 扔厕所垃圾 / 扔客厅垃圾）",
+      "页面展示该任务当前负责人，由该成员确认已完成",
+      "点击打卡按钮，系统自动记录：任务、完成者、打扫时间（完成时间）",
+      "打卡成功后，页面立即显示该任务下一次轮到的人的名字，并给出提醒文案"
+    ],
+    "reminderTextTemplate": "【任务名】已完成，下一次轮到【成员名】干活",
+    "timeRecording": {
+      "method": "auto_on_checkin",
+      "description": "每次打卡时系统自动记录完成时间（年-月-日 时:分），并随打卡记录一并保存、展示",
+      "manualOverride": "可选：允许填写实际打扫时间，默认以打卡时间为准"
+    }
+  },
+  "initialState": {
+    "note": "每项任务的初始负责人，以下为示例分配，可在正式使用前调整",
+    "clean_room": "member_lucky",
+    "toilet_trash": "member_wi",
+    "living_trash": "member_lucky"
+  },
+  "dataModel": {
+    "checkinRecord": {
+      "id": "唯一编号",
+      "taskId": "任务ID，对应tasks中的id",
+      "memberId": "完成者ID，对应members中的id",
+      "completedAt": "打扫/完成时间，打卡时自动记录（ISO 8601）",
+      "note": "备注（可选）"
+    },
+    "rotationState": {
+      "taskId": "任务ID",
+      "currentMemberId": "该任务当前负责人"
+    }
+  },
+  "history": {
+    "enabled": true,
+    "description": "保留全部打卡历史记录，供双方随时查看每次任务由谁在什么时间完成",
+    "displayFields": ["taskId", "memberId", "completedAt", "note"],
+    "features": [
+      "支持按任务筛选历史记录",
+      "最新记录置顶显示"
+    ]
+  },
+  "openQuestions": [
+    "每项任务的初始负责人分配是否按 initialState 中的示例？",
+    "三项任务是否各自独立轮流？（默认按此设计；如需三项打包整体轮流请告知）",
+    "是否需要超时提醒（例如某项任务超过N天未打卡时提醒）？"
+  ]
+}
